@@ -1,0 +1,19 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Kinect\kinectScript\KinectImgControllers\DisplayDepth.cs">
+    <Files>
+      <File FileName="Assets\Scripts\WaterOil\drawingOnGUI.cs" Line="10" Column="1" />
+      <File FileName="Assets\Scripts\Kinect\kinectScript\KinectWrapper\KinectSensor.cs" Line="157" Column="1" />
+      <File FileName="Assets\Scripts\Kinect\kinectScript\KinectImgControllers\DisplayDepth.cs" Line="256" Column="4" />
+    </Files>
+    <Pads>
+      <Pad Id="ClassPad">
+        <State expanded="True" selected="True" />
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
