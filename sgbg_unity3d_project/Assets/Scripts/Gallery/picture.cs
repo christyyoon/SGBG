@@ -10,9 +10,9 @@ public class picture : MonoBehaviour {
 	public GameObject deleteBtn;
 	public delpicture del;
 	public int check = 1; // Identification
-	public int delOnOff=1;
+	public int delOnOff=0;
 	public int picnumber;
-	public int mustdel=0;
+	//public int mustdel=0;
 
 	// Use this for initialization
 
@@ -22,18 +22,23 @@ public class picture : MonoBehaviour {
 		receivedScale = gal.originScale; // Receive originscale
 		receivedPosition = gal.originPosition; // Receive originposition
 		picnumber = gal.objnumber;
+		Debug.Log ("startpicnum" + picnumber);
 
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		//picnumber = gal.objnumber;
+		//Debug.Log ("updatepicnum" + picnumber);
 		deleteBtn = GameObject.Find("delete");
 		del = deleteBtn.GetComponent<delpicture>();
-		if (del.delOnCheck == 1)
-						renderer.material.color = Color.grey;
-		else if (del.delOnCheck == 2) {
-			File.Delete("C:\\Users\\Micky\\Documents\\last\\artbox_Data\\screenshot\\capture"+picnumber+".png");
-			del.delOnCheck=0;
+		if (del.delState == 1)
+			renderer.material.color = Color.grey;
+		else if ((del.delOn==1) && (delOnOff==1) && (del.delState==2)) {
+			Debug.Log("picnumbeforedel"+picnumber);
+			File.Delete("C:\\Users\\Micky\\Documents\\last\\artbox_Data\\screenshot\\capture"+(picnumber)+".png");
+			del.delState=0;
+			Debug.Log("picnumafterdel"+picnumber);
 		}
 
 	}
@@ -43,20 +48,22 @@ public class picture : MonoBehaviour {
 
 		deleteBtn = GameObject.Find("delete");
 		del = deleteBtn.GetComponent<delpicture>();
-		if ((check == 1) && (del.delOnCheck == 1) && (delOnOff == 1)) {
-			delOnOff=0;
+		if ((check == 1) && (del.delState == 1) && (delOnOff == 0)) {
+			delOnOff=1;
 			renderer.transform.Rotate(0, 0, -7);
 			//del.delOnCheck = 2;
-			mustdel = 1;
+			//mustdel = 1;
+			del.delOn=1;
 			Debug.Log(picnumber);
 
 
 				}
-		else if ((check == 1) && (del.delOnCheck == 1) && (delOnOff == 0)) {
+		else if ((check == 1) && (del.delState == 1) && (delOnOff == 1)) {
 			renderer.transform.Rotate(0, 0, 7);
-			delOnOff = 1;
+			delOnOff = 0;
 			//del.delOnCheck = 1;
-			mustdel=0;
+			//mustdel=0;
+			del.delOn=0;
 		}
 
 		// If select object, object is expanded
