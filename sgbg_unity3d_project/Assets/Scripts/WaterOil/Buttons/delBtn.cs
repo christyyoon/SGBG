@@ -14,9 +14,7 @@ public class delBtn : MonoBehaviour {
 	}
 
 	void OnMouseDown(){
-		if(Input.GetMouseButtonDown(0)){
-			GameObject canvas = GameObject.Find("canvas");
-			canvas.SendMessage("OnCanvasDelete");
-		}
+		GameObject canvas = GameObject.Find("canvas");
+		canvas.SendMessage("OnCanvasDelete");
 	}
 }

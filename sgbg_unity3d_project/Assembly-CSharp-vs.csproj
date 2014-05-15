@@ -5,7 +5,7 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{679122CD-8527-EAE0-B442-35F2739D1690}</ProjectGuid>
+	<ProjectGuid>{8925DDDA-6987-6BFE-6F8F-EF48EACDB13D}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
@@ -125,6 +125,7 @@
      <Compile Include="Assets\NGUI\Scripts\UI\UITooltip.cs" />
      <Compile Include="Assets\NGUI\Scripts\UI\UIViewport.cs" />
      <Compile Include="Assets\Scripts\DrawingAlgo.cs" />
+     <Compile Include="Assets\Scripts\Gallery\Gallery_temp.cs" />
      <Compile Include="Assets\Scripts\Kinect\kinectScript\KinectImgControllers\DisplayColor.cs" />
      <Compile Include="Assets\Scripts\Kinect\kinectScript\KinectImgControllers\DisplayDepth.cs" />
      <Compile Include="Assets\Scripts\Kinect\kinectScript\KinectImgControllers\Frame.cs" />
@@ -142,6 +143,7 @@
      <Compile Include="Assets\Scripts\Menu\resolution.cs" />
      <Compile Include="Assets\Scripts\Menu\sandart.cs" />
      <Compile Include="Assets\Scripts\Menu\wateroil.cs" />
+     <Compile Include="Assets\Scripts\Sandart\Sandart_temp.cs" />
      <Compile Include="Assets\Scripts\UIColorPicker\Scripts\Example\Rotate.cs" />
      <Compile Include="Assets\Scripts\UIColorPicker\Scripts\Example\UIColorRenderer.cs" />
      <Compile Include="Assets\Scripts\UIColorPicker\Scripts\Example\UIColorWidget.cs" />
@@ -200,6 +202,8 @@
      <Compile Include="Assets\Scripts\UIColorPicker\Scripts\UIColorPicker.cs" />
      <Compile Include="Assets\Scripts\WaterOil\Buttons\backtomenu.cs" />
      <Compile Include="Assets\Scripts\WaterOil\Buttons\delBtn.cs" />
+     <Compile Include="Assets\Scripts\WaterOil\Buttons\redoBtn.cs" />
+     <Compile Include="Assets\Scripts\WaterOil\Buttons\undoBtn.cs" />
      <Compile Include="Assets\Scripts\WaterOil\Palette\paint0.cs" />
      <Compile Include="Assets\Scripts\WaterOil\Palette\paint1.cs" />
      <Compile Include="Assets\Scripts\WaterOil\Palette\paint2.cs" />

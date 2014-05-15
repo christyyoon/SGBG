@@ -172,7 +172,7 @@ public class DisplayDepth : MonoBehaviour {
 			minDepth = 0; // initialize mindepth per frame
 			minPoint.Set (0, 0);
 	
-			for (int pix = 0; pix < depthBuf.Length; pix++) {
+			for (int pix = 0; pix < depthBuf.Length; pix += 2) {
 
 
 					// 's' key was pressed and two canvas vertex(leftTop, rightBottom) are not detected
@@ -247,7 +247,7 @@ public class DisplayDepth : MonoBehaviour {
 					gameObject.SendMessage ("OnCanvasDown",worldPoint);
 				else
 					gameObject.SendMessage ("OnMouseDown");
-				Debug.Log ("gameobject found : " + gameObject.name);
+				//Debug.Log ("gameobject found : " + gameObject.name);
 			}
 
 

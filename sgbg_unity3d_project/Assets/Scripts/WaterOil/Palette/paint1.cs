@@ -17,16 +17,19 @@ public class paint1 : MonoBehaviour {
 	
 	void OnMouseDown(){
 		if (Input.GetMouseButtonDown (0)) { // left button down
+			//get color of selected paint 
 			paintobj = GameObject.Find ("pallete/paint1");
 			Color color = paintobj.renderer.material.color;
-			
+
+			//notify the changed color to canvas
 			GameObject canvas = GameObject.Find("canvas");
 			drawingOnGUI canvasScript = canvas.GetComponent<drawingOnGUI>();
 			canvasScript.OnColorChange(color);
-			
+
+			//notify the changed color to color viewer
 			GameObject view = GameObject.Find("colorview");
 			view.renderer.material.color = color;
-			
+
 			GameObject palobj = GameObject.Find("pallete");
 			pal = palobj.GetComponent<palette>();
 			pal.check=0;
