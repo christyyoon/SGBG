@@ -9,7 +9,7 @@ public class pencil : MonoBehaviour {
 
 		if(toolkit != null){
 			toolkit.GetComponent<toolkit> ().SelectTool (this);
-			toolkit.GetComponent<toolkit> ().SelectToolName (toolType);
+			//toolkit.GetComponent<toolkit> ().SelectToolName (toolType);
 		}
 
 //		toolkit.SendMessage ("SelectTool",this); //send the object
