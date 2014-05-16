@@ -6,8 +6,15 @@ public class pencil : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		GameObject toolkit = GameObject.Find ("toolkit");
-		toolkit.SendMessage ("SelectTool",this); //send the object
-		toolkit.SendMessage ("SelectToolName", toolType);	//send toolname
+
+		if(toolkit != null){
+			toolkit.GetComponent<toolkit> ().SelectTool (this);
+			toolkit.GetComponent<toolkit> ().SelectToolName (toolType);
+		}
+
+//		toolkit.SendMessage ("SelectTool",this); //send the object
+//		toolkit.SendMessage ("SelectToolName", toolType);	//send toolname
+
 	}
 	
 	// Update is called once per frame
