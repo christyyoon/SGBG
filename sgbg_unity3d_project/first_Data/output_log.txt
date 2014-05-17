@@ -1,0 +1,204 @@
+Initialize engine version: 4.3.3f1 (c8ca9b6b9936)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 9.0c [igdumdx32.dll 8.15.10.2622]
+    Renderer: Intel(R) HD Graphics Family
+    Vendor:   Intel
+    VRAM:     880 MB (via DXGI)
+    Caps:     Shader=30 DepthRT=1 NativeDepth=1 NativeShadow=1 DF16=1 INTZ=1 RAWZ=0 NULL=1 RESZ=1 SlowINTZ=0
+Begin MonoManager ReloadAssembly
+Platform assembly: C:\Users\IMSK\Desktop\CAPSTONE\SGBG\sgbg_unity3d_project\first_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading C:\Users\IMSK\Desktop\CAPSTONE\SGBG\sgbg_unity3d_project\first_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Users\IMSK\Desktop\CAPSTONE\SGBG\sgbg_unity3d_project\first_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading C:\Users\IMSK\Desktop\CAPSTONE\SGBG\sgbg_unity3d_project\first_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+- Completed reload, in  0.102 seconds
+<RI> Initializing input.
+<RI> Input initialized.
+desktop: 1366x768 60Hz; virtual: 1366x768 at 0,0
+Platform assembly: C:\Users\IMSK\Desktop\CAPSTONE\SGBG\sgbg_unity3d_project\first_Data\Managed\System.dll (this message is harmless)
+UnloadTime: 0.747276 ms
+NuiInitialize Failed.
+ 
+(Filename: C:/BuildAgent/work/d3d49558e4d408f4/artifacts/StandalonePlayerGenerated/UnityEngineDebug.cpp Line: 53)
+
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0 / Dirty serialized files: 0)
+
+Unloading 12 unused Assets to reduce memory usage. Loaded Objects now: 470.
+Total: 1.478517 ms (FindLiveObjects: 0.049390 ms CreateObjectMapping: 0.021808 ms MarkObjects: 0.216806 ms  DeleteObjects: 0.076972 ms)
+
+waterbrush
+ 
+(Filename: C:/BuildAgent/work/d3d49558e4d408f4/artifacts/StandalonePlayerGenerated/UnityEngineDebug.cpp Line: 53)
+
+IndexOutOfRangeException: Array index is out of range.
+  at drawingOnGUI.updateTexture (UpdateData updateData) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.OnCanvasDown (Vector2 point) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+IndexOutOfRangeException: Array index is out of range.
+  at drawingOnGUI.updateTexture (UpdateData updateData) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.OnCanvasDown (Vector2 point) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+IndexOutOfRangeException: Array index is out of range.
+  at drawingOnGUI.updateTexture (UpdateData updateData) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.OnCanvasDown (Vector2 point) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+IndexOutOfRangeException: Array index is out of range.
+  at drawingOnGUI.updateTexture (UpdateData updateData) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.OnCanvasDown (Vector2 point) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+IndexOutOfRangeException: Array index is out of range.
+  at drawingOnGUI.updateTexture (UpdateData updateData) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.OnCanvasDown (Vector2 point) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+IndexOutOfRangeException: Array index is out of range.
+  at drawingOnGUI.updateTexture (UpdateData updateData) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.OnCanvasDown (Vector2 point) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+IndexOutOfRangeException: Array index is out of range.
+  at drawingOnGUI.updateTexture (UpdateData updateData) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.OnCanvasDown (Vector2 point) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+IndexOutOfRangeException: Array index is out of range.
+  at drawingOnGUI.updateTexture (UpdateData updateData) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.OnCanvasDown (Vector2 point) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+IndexOutOfRangeException: Array index is out of range.
+  at drawingOnGUI.updateTexture (UpdateData updateData) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.OnCanvasDown (Vector2 point) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+IndexOutOfRangeException: Array index is out of range.
+  at drawingOnGUI.updateTexture (UpdateData updateData) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.OnCanvasDown (Vector2 point) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+IndexOutOfRangeException: Array index is out of range.
+  at drawingOnGUI.updateTexture (UpdateData updateData) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.OnCanvasDown (Vector2 point) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+IndexOutOfRangeException: Array index is out of range.
+  at drawingOnGUI.updateTexture (UpdateData updateData) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.OnCanvasDown (Vector2 point) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+IndexOutOfRangeException: Array index is out of range.
+  at drawingOnGUI.updateTexture (UpdateData updateData) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.OnCanvasDown (Vector2 point) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+IndexOutOfRangeException: Array index is out of range.
+  at drawingOnGUI.updateTexture (UpdateData updateData) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.OnCanvasDown (Vector2 point) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+IndexOutOfRangeException: Array index is out of range.
+  at drawingOnGUI.updateTexture (UpdateData updateData) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.OnCanvasDown (Vector2 point) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+IndexOutOfRangeException: Array index is out of range.
+  at drawingOnGUI.updateTexture (UpdateData updateData) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.OnCanvasDown (Vector2 point) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+IndexOutOfRangeException: Array index is out of range.
+  at drawingOnGUI.updateTexture (UpdateData updateData) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.OnCanvasDown (Vector2 point) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+oilbrush
+ 
+(Filename: C:/BuildAgent/work/d3d49558e4d408f4/artifacts/StandalonePlayerGenerated/UnityEngineDebug.cpp Line: 53)
+
+knife
+ 
+(Filename: C:/BuildAgent/work/d3d49558e4d408f4/artifacts/StandalonePlayerGenerated/UnityEngineDebug.cpp Line: 53)
+
+pencil onMouseDown
+ 
+(Filename: C:/BuildAgent/work/d3d49558e4d408f4/artifacts/StandalonePlayerGenerated/UnityEngineDebug.cpp Line: 53)
+
+pencil
+ 
+(Filename: C:/BuildAgent/work/d3d49558e4d408f4/artifacts/StandalonePlayerGenerated/UnityEngineDebug.cpp Line: 53)
+
+IndexOutOfRangeException: Array index is out of range.
+  at drawingOnGUI.updateTexture (UpdateData updateData) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.OnCanvasDown (Vector2 point) [0x00000] in <filename unknown>:0 
+  at drawingOnGUI.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+eraser
+ 
+(Filename: C:/BuildAgent/work/d3d49558e4d408f4/artifacts/StandalonePlayerGenerated/UnityEngineDebug.cpp Line: 53)
+
+pencil onMouseDown
+ 
+(Filename: C:/BuildAgent/work/d3d49558e4d408f4/artifacts/StandalonePlayerGenerated/UnityEngineDebug.cpp Line: 53)
+
+pencil
+ 
+(Filename: C:/BuildAgent/work/d3d49558e4d408f4/artifacts/StandalonePlayerGenerated/UnityEngineDebug.cpp Line: 53)
+
+knife
+ 
+(Filename: C:/BuildAgent/work/d3d49558e4d408f4/artifacts/StandalonePlayerGenerated/UnityEngineDebug.cpp Line: 53)
+
+pencil onMouseDown
+ 
+(Filename: C:/BuildAgent/work/d3d49558e4d408f4/artifacts/StandalonePlayerGenerated/UnityEngineDebug.cpp Line: 53)
+
+pencil
+ 
+(Filename: C:/BuildAgent/work/d3d49558e4d408f4/artifacts/StandalonePlayerGenerated/UnityEngineDebug.cpp Line: 53)
+
+UnloadTime: 12.184139 ms
+Unloading 2 Unused Serialized files (Serialized files now loaded: 0 / Dirty serialized files: 0)
+
+Unloading 196 unused Assets to reduce memory usage. Loaded Objects now: 340.
+Total: 22.721703 ms (FindLiveObjects: 0.075048 ms CreateObjectMapping: 0.085952 ms MarkObjects: 0.346377 ms  DeleteObjects: 21.194435 ms)
+
