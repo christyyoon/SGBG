@@ -7,7 +7,6 @@ using System.Runtime.InteropServices; // needed to import dll
 public class drawingOnGUI : MonoBehaviour {
 
 	// don't add file extension ".dll"
-
 	[DllImport("mypaint_dll")]private static extern int applyTexture(System.IntPtr texPtr);
 
 	[DllImport("mypaint_dll")]private static extern void mypaint_initWithImageSize(int img_width, int img_height);
@@ -22,7 +21,7 @@ public class drawingOnGUI : MonoBehaviour {
 	[DllImport("mypaint_dll")]private static extern void mypaint_setHardness(float scale);
 	
 	[DllImport("mypaint_dll")]private static extern System.IntPtr  mypaint_getCanvas ();
-	[DllImport("mypaint_dll")]private static extern void mypaint_setCanvas(/*uint16_t*/ushort[]  buffer);
+	[DllImport("mypaint_dll")]private static extern void mypaint_setCanvas(System.UInt16[] buffer);
 
 	private Rect textureArea;
 	private Vector2 leftTopPosition;
@@ -54,7 +53,7 @@ public class drawingOnGUI : MonoBehaviour {
 		/* unity data initializaion*/
 		//canvas position, size (GUI texture) are hard-corded. Constants are based on 800 x 600 resolution
 		leftTopPosition = new Vector2 (Screen.width*0.17f,Screen.height*0.223f);
-	
+
 		width = (int)(Screen.width*0.663f);
 		height = (int)(Screen.height*0.6f);
 
@@ -76,6 +75,7 @@ public class drawingOnGUI : MonoBehaviour {
 		currentColor = new Color (0, 0, 0); // initial drawing color is black
 		radiusScale = 1.0f;
 		hardnessScale = 1.0f;
+
 		undoStack = new System.Collections.Generic.Stack<Texture2D>();
 		undoStack.Push (Instantiate(this.texture) as Texture2D); // push base canvas image
 		redoStack = new System.Collections.Generic.Stack<Texture2D>();
@@ -84,17 +84,23 @@ public class drawingOnGUI : MonoBehaviour {
 		mypaint_initWithImageSize (width, height); //initialize mypaint drawing alogrithm
 
 		mypaint_setColor (currentColor.r, currentColor.g, currentColor.b);
-
-//		UpdateData init = new UpdateData ();
-//		init.x = 0;
-//		init.y = 0;
-//		init.width = width;
-//		init.height = height;
-//
-//		updateTexture (init);
+		OnToolChange (currentTool);
 	}
 
 	private void setTextureToMypaint(){
+		Color[] canvasRGBA = texture.GetPixels(0);
+		System.UInt16[] rgba = new System.UInt16[width*height*4];
+		
+		int arrayIndex = 0;
+		for(int i = 0 ; i < canvasRGBA.Length ; i++){
+			rgba[arrayIndex]   = (System.UInt16)(canvasRGBA[i].r*65535/2.0f);
+			rgba[arrayIndex+1] = (System.UInt16)(canvasRGBA[i].g*65535/2.0f);
+			rgba[arrayIndex+2] = (System.UInt16)(canvasRGBA[i].b*65535/2.0f);
+			rgba[arrayIndex+3] = (System.UInt16)(canvasRGBA[i].a*65535/1.5f);
+			arrayIndex += 4;
+		}
+		
+		mypaint_setCanvas(rgba);
 	}
 
 	private void updateTexture(UpdateData updateData){
@@ -129,7 +135,7 @@ public class drawingOnGUI : MonoBehaviour {
 		Vector2 mousePosition = new Vector2(point.x, Screen.height - point.y);
 
 		if(textureArea.Contains(mousePosition)){
-			//TODO set radius , hardness by depth, size input that came from kinect
+			//TODO set radius , hardness by depth, size input that came from kinect and delta time, tilt
 			System.IntPtr updateDataPtr = mypaint_draw(mousePosition.x - leftTopPosition.x,
 			                                    height - (mousePosition.y - leftTopPosition.y),
 			                                    1.0f,0.0f,0.0f,1/10);
@@ -145,11 +151,13 @@ public class drawingOnGUI : MonoBehaviour {
 
 		// notify the change of color to palette
 		palette target = GameObject.Find("pallete").GetComponent<palette>();
-		target.clr = currentColor;
+		//target.clr = currentColor;
+		target.OnPaintAdd (currentColor);
 
 		//push current canvas image to undo stack
 		//TODO limit maximum number of undo
 		undoStack.Push (Instantiate(this.texture) as Texture2D);
+		Debug.Log ("undo stack push " + undoStack.Count);
 		//clear redo stack
 		redoStack.Clear ();
 	}
@@ -160,13 +168,14 @@ public class drawingOnGUI : MonoBehaviour {
 		mypaint_initWithImageSize (width, height); //initialize mypaint drawing alogrithm
 		
 		mypaint_setColor (currentColor.r, currentColor.g, currentColor.b);
+		OnToolChange (currentTool);
 
 		//set color of unity side texture to white
 		for(int i = 0 ; i < width ; i++)
 			for(int j = 0 ; j < height ; j++)
 				texture.SetPixel(i,j,new Color(1.0f,1.0f,1.0f,1.0f));
 
-		//undo/redo clear
+		//undo,redo clear
 		undoStack.Clear ();
 		undoStack.Push (Instantiate (this.texture) as Texture2D);
 		redoStack.Clear ();
@@ -227,9 +236,11 @@ public class drawingOnGUI : MonoBehaviour {
 		redoStack.Push (previousCanvas); // there is no need to deep copy. b/c previousCanvas is popped.
 
 		//TODO set mypaint canvas
+		setTextureToMypaint ();
 		//TODO timer
 
 		this.texture.Apply (false);
+
 	}
 
 	public void OnRedo(){
@@ -241,6 +252,7 @@ public class drawingOnGUI : MonoBehaviour {
 		undoStack.Push (currentCanvas);
 
 		//TODO set mypaint canvas
+		setTextureToMypaint ();
 		//TODO timer
 
 		this.texture.Apply (false);
@@ -256,18 +268,11 @@ public class drawingOnGUI : MonoBehaviour {
 		else if(textureArea.Contains(Input.mousePosition) && Input.GetMouseButtonUp(0)){ // to stable
 			OnCanvasUp();
 		}
-		else if(Input.GetKeyDown(KeyCode.C)){
-			System.IntPtr t = mypaint_getCanvas();
-			int[] b = new int[width*height*4];
 
-			Marshal.Copy(t,b,0,width*height*4);
-			int index = 10 * width * 4 + 10 * 4;
-
-			Debug.Log ("r : " + b[index] + " g : " + b[index+1] + " b : " + b[index+2] + " a : " + b[index+3]);
-
-			mypaint_setColor(1.0f,1.0f,1.0f);
+		if(Input.GetKeyDown(KeyCode.C)){
+			//setTextureToMypaint();
 		}
-		if(Input.GetKeyDown(KeyCode.R)){
+		else if(Input.GetKeyDown(KeyCode.R)){
 			Debug.Log("r");
 			radiusScale += 0.002f;
 			mypaint_setRadius(radiusScale);

@@ -2,83 +2,80 @@
 using System.Collections;
 using System.IO;
 
+/* Dynamic objects's script component */
 public class picture : MonoBehaviour {
+
 	public Vector3 receivedScale; // Value of receiver(scale)
 	public Vector3 receivedPosition; // Value of receiver(position)
-	public galleryobj gal; 
-	public GameObject canvasobj; // Declare object
-	public GameObject deleteBtn;
-	public delpicture del;
-	public int check = 1; // Identification
-	public int delOnOff=0;
-	public int picnumber;
-	//public int mustdel=0;
 
+	public galleryobj gal; // Canvas's script(galleryobj.cs)
+	public GameObject canvasobj; // Canvas object
+
+	public delpicture delPicCode; // Delete's script(delpicture.cs)
+	public GameObject delobj; // Delete object
+
+	public int check = 1; // OnMouseDown() identification ex) 1-> select picture about deletion, zoom the picture 0-> deselect picture, return picture 
+	public int delOn = 0; // selected picture about deletetion identification ex) 0-> nothing 1-> permit to select of deletion
+	
 	// Use this for initialization
-
+	
 	void Start () {
+		
 		canvasobj = GameObject.Find ("canvas"); // Find gameobject
 		gal = canvasobj.GetComponent<galleryobj> (); // Get script
+
+		delobj = GameObject.Find ("delete");
+		delPicCode = delobj.GetComponent<delpicture> ();
+
 		receivedScale = gal.originScale; // Receive originscale
 		receivedPosition = gal.originPosition; // Receive originposition
-		picnumber = gal.objnumber;
-		Debug.Log ("startpicnum" + picnumber);
-
+		
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		//picnumber = gal.objnumber;
-		//Debug.Log ("updatepicnum" + picnumber);
-		deleteBtn = GameObject.Find("delete");
-		del = deleteBtn.GetComponent<delpicture>();
-		if (del.delState == 1)
-			renderer.material.color = Color.grey;
-		else if ((del.delOn==1) && (delOnOff==1) && (del.delState==2)) {
-			Debug.Log("picnumbeforedel"+picnumber);
-			File.Delete("C:\\Users\\Micky\\Documents\\last\\artbox_Data\\screenshot\\capture"+(picnumber)+".png");
-			del.delState=0;
-			Debug.Log("picnumafterdel"+picnumber);
-		}
+		
+	}
 
+	/* Function about delete caputure.png in certain route */
+	public void DeletePic()
+	{
+		// Find certain file and delete.
+		// gameobject' name and capture png file's name are same.
+		// ex) object name : capture1 , png file name : capture1.png
+		File.Delete ("C:\\Users\\Micky\\Documents\\last\\artbox_Data\\screenshot\\" + gameObject.name + ".png");
 	}
 
 	void OnMouseDown()
 	{
 
-		deleteBtn = GameObject.Find("delete");
-		del = deleteBtn.GetComponent<delpicture>();
-		if ((check == 1) && (del.delState == 1) && (delOnOff == 0)) {
-			delOnOff=1;
-			renderer.transform.Rotate(0, 0, -7);
-			//del.delOnCheck = 2;
-			//mustdel = 1;
-			del.delOn=1;
-			Debug.Log(picnumber);
-
-
-				}
-		else if ((check == 1) && (del.delState == 1) && (delOnOff == 1)) {
-			renderer.transform.Rotate(0, 0, 7);
-			delOnOff = 0;
-			//del.delOnCheck = 1;
-			//mustdel=0;
-			del.delOn=0;
+		if ((check == 1) && (delPicCode.state == 1)) // When delete button is activated, and picture is selected
+		{
+			renderer.material.color = Color.gray; // Picture's color is darkend because of selection's expression.
+			delOn = 1; // Permit to select of deletion
+			check = 0; // Provide chance to deselction
 		}
 
-		// If select object, object is expanded
-		else if (check == 1) {
-						renderer.transform.position = new Vector3 (0.065f, 1.01f, -0.1f);
-						renderer.transform.localScale = new Vector3 (2.33f, 1.75f, 0.01f);
-						check = 0;
-				}
-
-		// If select expanded object, object is retuned originally
-		else if (check == 0) {
-						renderer.transform.position = receivedPosition;
-						renderer.transform.localScale = receivedScale;
-						check = 1;
+		else if ((check == 0) && (delPicCode.state == 1)) // When delete button is activated, and picture is deselected
+		{
+			renderer.material.color = Color.white; // Picture's color is brightened because of deselection's expression.
+			delOn=0; // Cancel to select of deletion
+			check=1; // Provide chance to selection
 		}
 
+		else if (check == 1) // When select picture, picture is expanded
+		{
+			renderer.transform.position = new Vector3 (0.065f, 1.01f, -0.1f); // Apply expanded picturs's position
+			renderer.transform.localScale = new Vector3 (2.33f, 1.75f, 0.01f); // Apply expanded picture,s scale
+			check = 0; // Provide chance to deselction
+		}
+
+		else if (check == 0) // When select expanded picture, pictue is returned original size and position
+		{
+			renderer.transform.position = receivedPosition; // Return to original position
+			renderer.transform.localScale = receivedScale; // Return to original scale
+			check=1; // Provide chance to selction
+		}
+		
 	}
 }
