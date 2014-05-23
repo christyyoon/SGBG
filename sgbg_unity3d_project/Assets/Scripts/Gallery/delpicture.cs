@@ -22,7 +22,7 @@ public class delpicture : MonoBehaviour {
 	void OnMouseDown()
 	{
 
-		fcount = Directory.GetFiles ("C:\\Users\\Micky\\Documents\\last\\artbox_Data\\screenshot", "*", SearchOption.AllDirectories).Length; // Count the number of file(파일개수)
+		fcount = Directory.GetFiles (Application.dataPath+"/screenshot", "*", SearchOption.AllDirectories).Length; // Count the number of file(파일개수)
 
 		if (state == 0) // When push the delete button firstly
 		{
@@ -35,7 +35,7 @@ public class delpicture : MonoBehaviour {
 
 			for(int i=1; i<=fcount; i++) // Examine selected picture as fcount
 			{
-				picture picturecode = GameObject.Find("capture"+i.ToString()).GetComponent<picture>(); // Get object's script(picture.cs)
+				picture picturecode = GameObject.Find("picture"+i.ToString()).GetComponent<picture>(); // Get object's script(picture.cs)
 
 				if(picturecode.delOn==1) // If object is selected as deletion
 				{

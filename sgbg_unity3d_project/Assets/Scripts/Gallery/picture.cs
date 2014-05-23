@@ -7,6 +7,7 @@ public class picture : MonoBehaviour {
 
 	public Vector3 receivedScale; // Value of receiver(scale)
 	public Vector3 receivedPosition; // Value of receiver(position)
+	public string receivedFilename; // value of receiver(png file name)
 
 	public galleryobj gal; // Canvas's script(galleryobj.cs)
 	public GameObject canvasobj; // Canvas object
@@ -29,6 +30,7 @@ public class picture : MonoBehaviour {
 
 		receivedScale = gal.originScale; // Receive originscale
 		receivedPosition = gal.originPosition; // Receive originposition
+		receivedFilename = gal.filename;
 		
 	}
 	
@@ -37,13 +39,10 @@ public class picture : MonoBehaviour {
 		
 	}
 
-	/* Function about delete caputure.png in certain route */
+	/* Function about delete png image in certain route */
 	public void DeletePic()
 	{
-		// Find certain file and delete.
-		// gameobject' name and capture png file's name are same.
-		// ex) object name : capture1 , png file name : capture1.png
-		File.Delete ("C:\\Users\\Micky\\Documents\\last\\artbox_Data\\screenshot\\" + gameObject.name + ".png");
+		File.Delete (Application.dataPath + "/screenshot/" + receivedFilename + ".png");
 	}
 
 	void OnMouseDown()
