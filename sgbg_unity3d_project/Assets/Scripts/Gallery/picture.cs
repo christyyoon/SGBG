@@ -60,13 +60,32 @@ public class picture : MonoBehaviour {
 	public void DeletePic()
 	{
 		File.Delete (Application.dataPath + "/screenshot/" + receivedFilename + ".png");
+		if(File.Exists (Application.dataPath + "/screenshot/" + receivedFilename + ".data"))
+			File.Delete (Application.dataPath + "/screenshot/" + receivedFilename + ".data");
+
 	}
 
 	void OnMouseDown()
 	{
 
+		// When delete button is activated, and picture is selected(working space)
+		if ((check == 1) && (File.Exists (Application.dataPath + "/screenshot/" + receivedFilename + ".data")) && (delPicCode.state == 1))
+		{
+			renderer.material.color = Color.gray; // Picture's color is darkend because of selection's expression.
+			delOn = 1; // Permit to select of deletion
+			check = 0; // Provide chance to deselction
+		}
+
+		// When delete button is activated, and picture is deselected(working space)
+		else if ((check == 0) && (File.Exists (Application.dataPath + "/screenshot/" + receivedFilename + ".data")) && (delPicCode.state == 1))
+		{
+			renderer.material.color = Color.white; // Picture's color is brightened because of deselection's expression.
+			delOn=0; // Cancel to select of deletion
+			check=1; // Provide chance to selection
+		}
+
 		// If png file involve data file(working file)
-		if ((check == 1) && (File.Exists (Application.dataPath + "/screenshot/" + receivedFilename + ".data")))
+		else if ((check == 1) && (File.Exists (Application.dataPath + "/screenshot/" + receivedFilename + ".data")))
 		{
 
 			datafile = new FileInfo(Application.dataPath+"/screenshot/"+receivedFilename+".data"); // Data file
@@ -88,28 +107,28 @@ public class picture : MonoBehaviour {
 
 		}
 
-		else if ((check == 1) && (delPicCode.state == 1)) // When delete button is activated, and picture is selected
+		else if ((check == 1) && (delPicCode.state == 1)) // When delete button is activated, and picture is selected(screenshot)
 		{
 			renderer.material.color = Color.gray; // Picture's color is darkend because of selection's expression.
 			delOn = 1; // Permit to select of deletion
 			check = 0; // Provide chance to deselction
 		}
 
-		else if ((check == 0) && (delPicCode.state == 1)) // When delete button is activated, and picture is deselected
+		else if ((check == 0) && (delPicCode.state == 1)) // When delete button is activated, and picture is deselected(screenshot)
 		{
 			renderer.material.color = Color.white; // Picture's color is brightened because of deselection's expression.
 			delOn=0; // Cancel to select of deletion
 			check=1; // Provide chance to selection
 		}
 
-		else if (check == 1) // When select picture, picture is expanded
+		else if (check == 1) // When select picture, picture is expanded(screenshot)
 		{
 			renderer.transform.position = new Vector3 (0.065f, 1.01f, -0.1f); // Apply expanded picturs's position
 			renderer.transform.localScale = new Vector3 (2.33f, 1.75f, 0.01f); // Apply expanded picture,s scale
 			check = 0; // Provide chance to deselction
 		}
 
-		else if (check == 0) // When select expanded picture, pictue is returned original size and position
+		else if (check == 0) // When select expanded picture, pictue is returned original size and position(screenshot)
 		{
 			renderer.transform.position = receivedPosition; // Return to original position
 			renderer.transform.localScale = receivedScale; // Return to original scale
