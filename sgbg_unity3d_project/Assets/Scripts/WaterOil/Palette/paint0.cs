@@ -2,10 +2,17 @@
 using System.Collections;
 
 public class paint0 : MonoBehaviour {
-	public DrawingAlgo algo;
-	public GameObject paintobj;
-	public palette pal;
-	public GameObject palobj;
+
+	public GameObject drawingobj; // Drawing object
+	public DrawingAlgo algo; // Drawing code
+
+	public GameObject paintobj; // Paint object
+
+	public palette pal; // Pallete code
+	public GameObject palobj; // pallete object
+
+	public GameObject view; // Colorviewer object
+
 	// Use this for initialization
 	void Start () {
 	}
@@ -14,28 +21,20 @@ public class paint0 : MonoBehaviour {
 	void Update () {
 	
 	}
-
-	public void OnCanvasDown(){
-		paintobj = GameObject.Find ("pallete/paint0");
-
-		GameObject.Find ("canvas").SendMessage ("OnColorChange", paintobj.renderer.material.color);
-	}
 	
-	void OnMouseDown(){
-		if (Input.GetMouseButtonDown (0)) { // left button down
-			paintobj = GameObject.Find ("pallete/paint0");
-			Color color = paintobj.renderer.material.color;
+	void OnMouseDown()
+	{
+		drawingobj = GameObject.Find("Main Camera");
+		algo = drawingobj.GetComponent<DrawingAlgo>();
+		paintobj = GameObject.Find ("pallete/paint0");
+		algo.col = paintobj.renderer.material.color; // Set drawing color to paint object's color
 
-			GameObject canvas = GameObject.Find("canvas");
-			drawingOnGUI canvasScript = canvas.GetComponent<drawingOnGUI>();
-			canvasScript.OnColorChange(color);
+		palobj = GameObject.Find ("pallete");
+		pal = palobj.GetComponent<palette>();
+		pal.check=0; // Send message(paint object is selected) to pallete
 
-			GameObject view = GameObject.Find("colorview");
-			view.renderer.material.color = color;
+		view = GameObject.Find("colorview");
+		view.renderer.material.color = algo.col; // Change colorviewers's color to drawing color
 
-			GameObject palobj = GameObject.Find("pallete");
-			pal = palobj.GetComponent<palette>();
-			pal.check=0;
-		}
 	}
 }
