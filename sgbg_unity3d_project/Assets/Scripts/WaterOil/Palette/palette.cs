@@ -1,101 +1,131 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.IO;
 
 public class palette : MonoBehaviour {
 	
-	public GameObject[] paint;//= new GameObject[8];
-	public Color clr;
-	public Color temp;
-	public Color temp2;
-	public int allTrueCaseCnt=0;
-	public int check=1;
+	public GameObject[] paint;// Create new GameObject[8];
+	public Color clr; // When draw line and finish, that color(OnMouseUp())
+	public Color palleteClr; // Receiver of clr
+	public int allTrueCaseCnt=0; // Count value, when all paint object exist
+	public int check=1; // Identification(if paint is selected of not selected) 1 -> not selected 0 -> selected
 
-	// added by dmHyeon
-	private int paintCount;
-	private GameObject[] paints;
-	private int nextToPaint;
-	//private int nextToPaint = 0;
+	public string dataname; // Working file's data file name(NULL or wateroil or sandart)
+	public StreamReader reader; // File reader
+	public FileInfo datafile; // File info
 
-	//
+	public int countOfPaint; // Data file's paint count
+	public string unionOfRGBA; // Data file's union of paint's rgba
+	public string[] rgba; // Paint's rgba array
+
+	public float r; // rgb(r)
+	public float g; // rgb(g)
+	public float b; // rgb(b)
+	public float a; // rgb(a)
+
+	/*
+	 * Example of data file
+	 * 
+	 * -----------------------
+	 * wateroil
+	 * 3
+	 * 0.962 0.863 0.888 1.000
+	 * 0.738 0.709 0.948 1.000
+	 * 0.650 0.844 0.980 1.000
+	 *------------------------
+	 *
+	 */
 
 	// Use this for initialization
 	void Start () {
-		//initialize all paint game objects.
-		paints= new GameObject[8];
+
+		paint= new GameObject[8]; // Create paint object(8)
+
+		// Set paint object's state(initialization)
 		for (int i=0; i<8; i++) {
-			paints[i] = GameObject.Find("pallete/paint"+i.ToString());
-			paints[i].renderer.enabled=false;
+			paint[i] = GameObject.Find("pallete/paint"+i.ToString()); // Find paint object
+			paint[i].renderer.enabled=false; // Set enabled false
 		}
-		paintCount = 0;
-		nextToPaint = 0;
-		//Debug.Log ("initial clr"+clr);
-		//Debug.Log ("initial temp"+temp);
-		//temp = clr;
-		
+
+		dataname = PlayerPrefs.GetString ("art"); // Receive datafile's name
+
+		/* If datafile's name is not empty, load datafile to wateroil scene  */
+		if (dataname != string.Empty)
+		{
+			datafile = new FileInfo (Application.dataPath + "/screenshot/" + dataname + ".data"); // Datefile
+
+			reader = datafile.OpenText (); // Open datafile by text
+	
+			reader.ReadLine (); // Read first line(wateroil or sandart)
+
+			countOfPaint = System.Convert.ToInt32 (reader.ReadLine ()); // Read paint's count and convert to integer
+
+			/* Activate paint object and set color */
+			for (int i=0; i<countOfPaint; i++)
+			{
+				unionOfRGBA = reader.ReadLine (); // Data file's union of paint's rgba
+				rgba = unionOfRGBA.Split (); // Split union of paint's rgba and distribute to array
+
+				// set rgba string to rgba value
+				r = (float)System.Convert.ToDouble (rgba [0]);
+				g = (float)System.Convert.ToDouble (rgba [1]);
+				b = (float)System.Convert.ToDouble (rgba [2]);
+				a = (float)System.Convert.ToDouble (rgba [3]);
+
+				paint [i].renderer.enabled = true; // Activate paint object
+				paint [i].renderer.material.color = new Color (r, g, b, a); // Set paint's color
+
+			}
+
+			PlayerPrefs.DeleteKey ("art"); // Delete art's information
+
+		}
+
 	}
 	
 	
 	// Update is called once per frame
 	void Update () {
-		//paint [0].renderer.enabled = true;
-		//paint [0].renderer.material.color = clr;
-//		int clrChangeCnt = 0;
-//		int paintCnt = 0;
-//		//check = 1;
-//		//Debug.Log("update clr"+clr);
-//		//Debug.Log("update temp"+temp);
-//		if (temp != clr) {
-//			clrChangeCnt++;
-//			//temp2=paint[(allTrueCaseCnt-1)%8].renderer.material.color;
-//			temp=clr;
-//			//Debug.Log("temp!=clr");
-//			if((paint[0].renderer.enabled==true) && (paint[1].renderer.enabled==true) && (paint[2].renderer.enabled==true) && (paint[3].renderer.enabled==true) && (paint[4].renderer.enabled==true) && (paint[5].renderer.enabled==true) && (paint[6].renderer.enabled==true) && (paint[7].renderer.enabled==true) && (check==1))
-//			{
-//	
-//				paint[allTrueCaseCnt%8].renderer.material.color=temp;
-//				allTrueCaseCnt++;
-//		
-//				//Debug.Log("alltrue"+allTrueCaseCnt);
-//
-//			}
-//
-//			for(int i=0; i<8; i++)
-//			{
-//				if(paint[i].renderer.enabled==false)
-//				{
-//					paint[i].renderer.enabled=true;
-//					paint[i].renderer.material.color=temp;
-//					paintCnt++;
-//				}
-//				
-//				if(clrChangeCnt==paintCnt)
-//					break;
-//			}
-//
-//			check=1;
-//
-//		}
-	}
 
-	public void OnPaintAdd(Color color){
-		/*	1. compare color parameter to color of all paint game objects
-		 	2. if same color is found, then end adding paint process
-		 	3. else add color to paint game object
-		 */
-		Debug.Log ("OnPaintAdd");
-		for (int i = 0; i < paintCount; i++) {
-			if(color == paints[i].renderer.material.color)
-				return; // already a paint have the color
+		int clrChange = 0; // Identification(change color) 0 -> not change 1 -> color is changed
+		int paintChange = 0; // Identification 0 -> paint color is empty 1 -> paint color is filled
+
+		// If color is changed
+		if (palleteClr != clr) {
+
+			clrChange=1; // Color is changed
+			palleteClr=clr; // change palleteClr by updated color
+
+			// When all paint object is filled by color and paint object is not selected
+			if((paint[0].renderer.enabled==true) && (paint[1].renderer.enabled==true) && (paint[2].renderer.enabled==true) && (paint[3].renderer.enabled==true) && (paint[4].renderer.enabled==true) && (paint[5].renderer.enabled==true) && (paint[6].renderer.enabled==true) && (paint[7].renderer.enabled==true) && (check==1))
+			{
+	
+				paint[allTrueCaseCnt%8].renderer.material.color=palleteClr; //Refilled paint color order by asc
+				allTrueCaseCnt++;
+		
+			}
+
+			// when paint is not filled by color(wateroil scene is opened firstly)
+			for(int i=0; i<8; i++)
+			{
+				if((paint[i].renderer.enabled == false) && (check==0)) // If not empty paint selected
+					break;
+
+				else if(paint[i].renderer.enabled == false) // If paint is empty
+				{
+					paint[i].renderer.enabled=true; // Activate paint object
+					paint[i].renderer.material.color=palleteClr; // Set color to paint object
+					paintChange=1; // Paint color is filled
+				}
+
+				if(clrChange == paintChange) // For once update, once change, so two identification is true, then break
+					break;
+			}
+
+			check=1; // Because user select paint object, check state is changed 0
+
 		}
 
-		if(paints[nextToPaint].renderer.enabled == false){
-			paints[nextToPaint].renderer.enabled = true;
-			paintCount++;
-		}
 
-		paints [nextToPaint].renderer.material.color = color;
-
-		nextToPaint++;
-		nextToPaint %= 8;
 	}
 }

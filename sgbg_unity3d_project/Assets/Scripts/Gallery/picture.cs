@@ -7,7 +7,11 @@ public class picture : MonoBehaviour {
 
 	public Vector3 receivedScale; // Value of receiver(scale)
 	public Vector3 receivedPosition; // Value of receiver(position)
+
 	public string receivedFilename; // value of receiver(png file name)
+	public StreamReader reader; // File reader
+	public FileInfo datafile; // File info
+	public string nextScene; // Identification(sort of work ex> warteroil or sandart)
 
 	public galleryobj gal; // Canvas's script(galleryobj.cs)
 	public GameObject canvasobj; // Canvas object
@@ -17,7 +21,20 @@ public class picture : MonoBehaviour {
 
 	public int check = 1; // OnMouseDown() identification ex) 1-> select picture about deletion, zoom the picture 0-> deselect picture, return picture 
 	public int delOn = 0; // selected picture about deletetion identification ex) 0-> nothing 1-> permit to select of deletion
-	
+
+	/*
+	 * Example of data file
+	 * 
+	 * -----------------------
+	 * wateroil
+	 * 3
+	 * 0.962 0.863 0.888 1.000
+	 * 0.738 0.709 0.948 1.000
+	 * 0.650 0.844 0.980 1.000
+	 *------------------------
+	 *
+	 */
+
 	// Use this for initialization
 	
 	void Start () {
@@ -30,8 +47,8 @@ public class picture : MonoBehaviour {
 
 		receivedScale = gal.originScale; // Receive originscale
 		receivedPosition = gal.originPosition; // Receive originposition
-		receivedFilename = gal.filename;
-		
+		receivedFilename = gal.filename; // Receive filename(png)
+
 	}
 	
 	// Update is called once per frame
@@ -48,7 +65,30 @@ public class picture : MonoBehaviour {
 	void OnMouseDown()
 	{
 
-		if ((check == 1) && (delPicCode.state == 1)) // When delete button is activated, and picture is selected
+		// If png file involve data file(working file)
+		if ((check == 1) && (File.Exists (Application.dataPath + "/screenshot/" + receivedFilename + ".data")))
+		{
+
+			datafile = new FileInfo(Application.dataPath+"/screenshot/"+receivedFilename+".data"); // Data file
+			reader = datafile.OpenText(); // Open data file by text
+
+			nextScene=reader.ReadLine(); // Read first line(wateroil or sandart)
+
+			if(nextScene == "wateroil") // If wateroil datafile
+			{
+				PlayerPrefs.SetString("art", receivedFilename); // Send datafile's name
+				Application.LoadLevel("wateroil"); // switch to wateroil scene
+			}
+			else if(nextScene == "sandart") // If sandart datafile
+			{
+				PlayerPrefs.SetString("art", receivedFilename); // Send datafile's name
+				Application.LoadLevel("sandart"); // switch to sandart scene
+			}
+	
+
+		}
+
+		else if ((check == 1) && (delPicCode.state == 1)) // When delete button is activated, and picture is selected
 		{
 			renderer.material.color = Color.gray; // Picture's color is darkend because of selection's expression.
 			delOn = 1; // Permit to select of deletion
