@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.IO;
 
 public class palette : MonoBehaviour {
 	
@@ -16,10 +17,15 @@ public class palette : MonoBehaviour {
 	private int nextToPaint;
 	//private int nextToPaint = 0;
 
+	private bool isStarted = false;
 	//
 
 	// Use this for initialization
 	void Start () {
+		if(isStarted == true)
+			return ;
+		isStarted = false;
+
 		//initialize all paint game objects.
 		paints= new GameObject[8];
 		for (int i=0; i<8; i++) {
@@ -37,44 +43,53 @@ public class palette : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		//paint [0].renderer.enabled = true;
-		//paint [0].renderer.material.color = clr;
-//		int clrChangeCnt = 0;
-//		int paintCnt = 0;
-//		//check = 1;
-//		//Debug.Log("update clr"+clr);
-//		//Debug.Log("update temp"+temp);
-//		if (temp != clr) {
-//			clrChangeCnt++;
-//			//temp2=paint[(allTrueCaseCnt-1)%8].renderer.material.color;
-//			temp=clr;
-//			//Debug.Log("temp!=clr");
-//			if((paint[0].renderer.enabled==true) && (paint[1].renderer.enabled==true) && (paint[2].renderer.enabled==true) && (paint[3].renderer.enabled==true) && (paint[4].renderer.enabled==true) && (paint[5].renderer.enabled==true) && (paint[6].renderer.enabled==true) && (paint[7].renderer.enabled==true) && (check==1))
-//			{
-//	
-//				paint[allTrueCaseCnt%8].renderer.material.color=temp;
-//				allTrueCaseCnt++;
-//		
-//				//Debug.Log("alltrue"+allTrueCaseCnt);
-//
-//			}
-//
-//			for(int i=0; i<8; i++)
-//			{
-//				if(paint[i].renderer.enabled==false)
-//				{
-//					paint[i].renderer.enabled=true;
-//					paint[i].renderer.material.color=temp;
-//					paintCnt++;
-//				}
-//				
-//				if(clrChangeCnt==paintCnt)
-//					break;
-//			}
-//
-//			check=1;
-//
-//		}
+
+	}
+
+	public void init(string fileName){
+		isStarted = true; // don't excute start method after this method
+
+		//fileName : 2014~~~~~.data
+		FileInfo datafile = new FileInfo (Application.dataPath + "/galleryData/" + fileName); // Datefile
+		
+		StreamReader reader = datafile.OpenText (); // Open datafile by text
+		
+		reader.ReadLine (); // Read first line(wateroil or sandart)
+		
+		int countOfPaint = System.Convert.ToInt32 (reader.ReadLine ()); // Read paint's count and convert to integer
+		
+		/* Activate paint object and set color */
+		for (int i=0; i<countOfPaint; i++)
+		{
+			string unionOfRGBA = reader.ReadLine (); // Data file's union of paint's rgba
+			string[] rgba = unionOfRGBA.Split (); // Split union of paint's rgba and distribute to array
+			
+			// set rgba string to rgba value
+			float r = (float)System.Convert.ToDouble (rgba [0]);
+			float g = (float)System.Convert.ToDouble (rgba [1]);
+			float b = (float)System.Convert.ToDouble (rgba [2]);
+			float a = (float)System.Convert.ToDouble (rgba [3]);
+			
+			paints [i].renderer.enabled = true; // Activate paint object
+			paints [i].renderer.material.color = new Color (r, g, b, a); // Set paint's color
+			
+		}
+
+		paintCount = countOfPaint;
+		nextToPaint = paintCount%8;
+
+
+	}
+
+	public Color[] getPaintsColor(){
+		Color[] paintsColor = new Color[paintCount];
+
+		for (int i = 0; i < paintCount; i++) {
+			GameObject paint = GameObject.Find("pallete/paint" + i.ToString());
+			paintsColor[i] = paint.renderer.material.color;
+		}
+
+		return paintsColor;
 	}
 
 	public void OnPaintAdd(Color color){

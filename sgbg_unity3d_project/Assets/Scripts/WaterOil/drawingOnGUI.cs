@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices; // needed to import dll 
+using System.IO;
 
 public class drawingOnGUI : MonoBehaviour {
 
@@ -44,11 +45,24 @@ public class drawingOnGUI : MonoBehaviour {
 	private float radiusScale;
 	private float hardnessScale;
 
+	private bool isStarted = false;
+	private bool isCanvasChanged = false;
+	private string canvasID;
+
 	//for undo/redo
 	private System.Collections.Generic.Stack<CanvasSnapshot> undoStack;
 	private System.Collections.Generic.Stack<CanvasSnapshot> redoStack;
 	// Use this for initialization
 	void Start () {
+
+		if(isStarted == true)
+			return;
+
+		canvasID = string.Empty; // to check new canvas or old canvas?
+
+		Debug.Log ("watoeoil start");
+		isStarted = true; // prevent to duplicate start method
+
 		/* unity data initializaion*/
 		//canvas position, size (GUI texture) are hard-corded. Constants are based on 800 x 600 resolution
 		leftTopPosition = new Vector2 (Screen.width*0.17f,Screen.height*0.223f);
@@ -92,6 +106,8 @@ public class drawingOnGUI : MonoBehaviour {
 		int bufferSize = tileWidth * tileHeight * tileSize; 
 		
 		short[] buf = new short[bufferSize];
+
+		buffer = new short[bufferSize]; // used in water oil space
 
 		Marshal.Copy(img,buf,0,bufferSize);
 		undoStack.Push (new CanvasSnapshot(deepCopiedTex,buf)); // push base canvas image
@@ -137,11 +153,10 @@ public class drawingOnGUI : MonoBehaviour {
 		if(buffer == null)
 			buffer = new short[bufferSize];
 
-
-
 //		Debug.Log ("screen width : " + canvasWidth + " , screen height : " + canvasHeight);
 //		Debug.Log ("tileWidth : " + tileWidth + " , tileHeight : " + tileHeight);
 //		Debug.Log ("tileSize : " + tileSize + " , bufferSize : " + bufferSize);
+
 		Marshal.Copy(img,buffer,0,bufferSize);
 		//
 
@@ -171,6 +186,9 @@ public class drawingOnGUI : MonoBehaviour {
 	}
 
 	public void OnCanvasDown(Vector2 point, short minDepth){ // TODO change parameter to use depth, size, position
+		if(isCanvasChanged == false)
+			isCanvasChanged = true;
+
 		Vector2 mousePosition = new Vector2(point.x, Screen.height - point.y);
 
 		if(textureArea.Contains(mousePosition)){
@@ -341,6 +359,70 @@ public class drawingOnGUI : MonoBehaviour {
 
 		this.texture.Apply (false);
 
+	}
+
+	public Texture2D GetCanvasTex(){
+//		Debug.Log ("10,10 : r : " + texture.GetPixel (10, 10).r + " , g : " + texture.GetPixel (10, 10).g
+//						+ " , b : " + texture.GetPixel (10, 10).b + " , a : " + texture.GetPixel (10, 10).a);
+		//set transparent pixel to white
+		for(int i = 0 ; i < texture.height ; i++){
+			for(int j = 0 ; j < texture.width; j++){
+				if(texture.GetPixel(j,i).a == 0.5019608f){
+					texture.SetPixel(j,i,new Color(255,255,255,255));
+				}
+			}
+
+		}
+		return texture;
+	}
+
+	public short[] getCanvasBuf(){
+		return buffer;
+	}
+
+	public bool isCanvasChange(){
+		return isCanvasChanged;
+	}
+
+	public string getCanvasID(){
+		return canvasID;
+	}
+
+	public void init(string fileName){
+		Debug.Log ("init");
+		Start ();
+
+		//check canvasID, baseImg for undo
+		canvasID = fileName.Substring (fileName.Length - 18, 14); // 2014~~~
+
+		string filePath = Application.dataPath + "/galleryData/" + fileName;
+
+		if (File.Exists(filePath))
+		{
+			Debug.Log (filePath+" loading");
+			using (BinaryReader reader = new BinaryReader(File.Open(filePath, FileMode.Open)))
+			{
+				for(int i = 0; i < buffer.Length ; i++){
+					buffer[i] = reader.ReadInt16();
+				}
+			}
+		}
+
+		//set buffer to mypaint
+		mypaint_setCanvas (buffer.Clone() as short[]);
+
+		//refresh canvas by mypaint buffer
+		UpdateData ud = new UpdateData();
+		ud.x = 0;
+		ud.y = 0;
+		ud.width = canvasWidth;
+		ud.height = canvasHeight;
+
+		updateTexture (ud);
+
+		Texture2D deepCopiedTex = Instantiate (texture) as Texture2D;
+		undoStack.Clear ();
+		undoStack.Push (new CanvasSnapshot(deepCopiedTex, buffer.Clone() as short[]));
 	}
 	// Update is called once per frame
 	void Update () {
