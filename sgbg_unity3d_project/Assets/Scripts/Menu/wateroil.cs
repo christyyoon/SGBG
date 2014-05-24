@@ -12,9 +12,14 @@ public class wateroil : MonoBehaviour {
 	void Update () {
 
 	}
+
+	void OnCanvasDown(){
+		Application.LoadLevel ("wateroil");
+	}
+
 	void OnMouseDown(){
 		if (Input.GetMouseButtonDown (0)) { // left button down
 			Application.LoadLevel ("wateroil");
 		}
-		}
+	}
 }

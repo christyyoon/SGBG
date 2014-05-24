@@ -14,6 +14,10 @@ public class quit : MonoBehaviour {
 	
 	}
 
+	void OnCanvasDown(){
+		Application.Quit (); // terminate program.
+	}
+
 	void OnMouseDown(){
 				if (Input.GetMouseButtonDown (0)) { // left button down
 						Application.Quit ();

@@ -11,28 +11,20 @@ public class DisplayDepth : MonoBehaviour {
 	
 	private short minDepth; // minimum depth in depth buffer
 	private Vector2 minPoint;
-	private Texture2D tex;
 	private short[] depthSnapshot;
 	private Vector2[] ROIVertex = new Vector2[2]; // store leftTop, rightBottom point
 	private int pointCount = 0;
 	
-	private bool isDetected = true;
+	private bool isDetected = false;
+	
+	private short errorRange = 15; // range of vibration degree
 
-	private bool isStable = true;
-	private bool swOn = false;
-	private short outputCount = 0;
-	private StreamWriter sw;
-	private short errorRange = 12; // range of vibration degree
-
-
-	private ArrayList actionData = new ArrayList();
+	private Vector2 prevMinPtr;
 
 	#region
 	// Use this for initialization
 	void Start () {
-		tex = new Texture2D(320,240,TextureFormat.ARGB32,false);
-		//renderer.material.mainTexture = tex;
-		//minPoint.Set (0, 0); // initialize the min coordinate
+		prevMinPtr = new Vector2 (0, 0);
 	}
 	#endregion
 	
@@ -43,10 +35,6 @@ public class DisplayDepth : MonoBehaviour {
 	}
 	// Update is called once per frame
 	void Update () {
-		if(Input.GetMouseButtonDown(0)){
-//		Debug.Log ("mouse pos  : " + Input.mousePosition.x + "," + Input.mousePosition.y);
-			
-		}
 		if (Input.GetKeyDown (KeyCode.S)) { // key S means snapshot
 			Debug.Log ("S key pressed!");
 			
@@ -55,10 +43,9 @@ public class DisplayDepth : MonoBehaviour {
 			depthSnapshot = new short[320*240];
 			arrayCopy(depthSnapshot,dw.depthImg);
 			
-			//initiate ROI vertics
+			//initiate ROI vertics manually
 			ROIVertex[0].Set(55,3);//left top
 			ROIVertex[1].Set(310,195);//right bottom
-
 
 			//initiate number of vertex
 			pointCount = 2;
@@ -196,7 +183,8 @@ public class DisplayDepth : MonoBehaviour {
 			
 					}
 			}
-	
+
+		Debug.Log ("mindep : " + minDepth);
 //		if(minDepth <= errorRange){ // stable state
 //			if(isDetected == false){
 //				Debug.Log("stable state");
@@ -214,6 +202,10 @@ public class DisplayDepth : MonoBehaviour {
 //		} 
 		//test//
 		if(pointCount == 2 && minDepth > errorRange){
+
+			if(isDetected == false)
+				isDetected = true;
+
 			float x,y;
 
 			//find x,y ratio
@@ -223,37 +215,43 @@ public class DisplayDepth : MonoBehaviour {
 			// coordinates transformation from kinect to unity
 			y = 1 - y;
 
+			// for debuging
 			if(guiT != null)
 				guiT.transform.position = new Vector3(x,y,0f); 
 
 			//y -= 0.06f; // adjust calibration manually 
 
-			text.guiText.text = "spandex pos : "+x+ "," + y;
+			text.guiText.text = "spandex pos : "+ x + "," + y;
 
 			Vector2 worldPoint = new Vector2(Screen.width*x, Screen.height*y);
 
-			// TODO PERFOMANCE
 			//2. find game object by kinect input(2D coordinates)
 			GameObject gameObject = findGameObject (worldPoint.x, worldPoint.y);
 			GameObject colorSelector = findColorSelector(worldPoint.x, worldPoint.y);
 
-			if(colorSelector != null){
-				GameObject.Find ("Control - Circular Color Picker").SendMessage("OnCanvasDown",worldPoint);
-			}
-			
 			//3. call the onSpandexDown method
 			if (gameObject != null){
-				if(gameObject.name == "canvas")
-					gameObject.SendMessage ("OnCanvasDown",worldPoint);
+				if(gameObject.name == "canvas"){
+					drawingOnGUI canvasScript = gameObject.GetComponent<drawingOnGUI>();
+					canvasScript.OnCanvasDown(worldPoint,minDepth); // TODO complete params
+				}
+				else if(colorSelector != null){
+					GameObject.Find ("Control - Circular Color Picker").SendMessage("OnCanvasDown",worldPoint);
+				}
 				else
-					gameObject.SendMessage ("OnMouseDown");
+					gameObject.SendMessage ("OnCanvasDown");
 				//Debug.Log ("gameobject found : " + gameObject.name);
 			}
 
-
+			prevMinPtr = worldPoint;
 		}
-		else if(pointCount == 2 && minDepth < errorRange){
-			GameObject.Find("canvas").SendMessage("OnCanvasUp");
+		else if(pointCount == 2 && minDepth < errorRange && isDetected == true){
+			isDetected = false;
+
+			if(findGameObject(prevMinPtr.x,prevMinPtr.y).name == "canvas") // 'spandex canvas up' on 'drawing canvas'
+				GameObject.Find("canvas").SendMessage("OnCanvasUp");
+
+			prevMinPtr.Set (0,0);
 		}
 	
  	

@@ -3,6 +3,9 @@ using System.Collections;
 
 public class undoBtn : MonoBehaviour {
 
+	private bool isReady = true;
+	private const float TIME_INTERVAL = 0.2f;
+
 	// Use this for initialization
 	void Start () {
 	
@@ -13,8 +16,28 @@ public class undoBtn : MonoBehaviour {
 	
 	}
 
+	void buttonReady(){
+		isReady = true;
+
+	}
+
+	public void OnCanvasDown(){
+
+		if(isReady == true){
+			GameObject canvas = GameObject.Find("canvas");
+			canvas.SendMessage("OnUndo");
+			Invoke("buttonReady",TIME_INTERVAL);
+			isReady = false;
+		}
+
+	}
+
 	void OnMouseDown(){
-		GameObject canvas = GameObject.Find("canvas");
-		canvas.SendMessage("OnUndo");
+		if(isReady == true){
+			GameObject canvas = GameObject.Find("canvas");
+			canvas.SendMessage("OnUndo");
+			Invoke("buttonReady",TIME_INTERVAL);
+			isReady = false;
+		}
 	}
 }

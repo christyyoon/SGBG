@@ -82,7 +82,6 @@ public class palette : MonoBehaviour {
 		 	2. if same color is found, then end adding paint process
 		 	3. else add color to paint game object
 		 */
-		Debug.Log ("OnPaintAdd");
 		for (int i = 0; i < paintCount; i++) {
 			if(color == paints[i].renderer.material.color)
 				return; // already a paint have the color
