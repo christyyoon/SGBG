@@ -129,8 +129,8 @@ public class picture : MonoBehaviour
 		
 		else if (check == 1) // When select picture, picture is expanded(screenshot)
 		{
-			renderer.transform.position = new Vector3(0.065f, 1.01f, -0.1f); // Apply expanded picturs's position
-			renderer.transform.localScale = new Vector3(2.33f, 1.75f, 0.01f); // Apply expanded picture,s scale
+			renderer.transform.position = new Vector3(0.05f, 0.96f, -0.1f); // Apply expanded picturs's position
+			renderer.transform.localScale = new Vector3(1.83f, 1.16f, 0.01f); // Apply expanded picture,s scale
 			check = 0; // Provide chance to deselction
 		}
 		

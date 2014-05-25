@@ -40,7 +40,7 @@ public class ScreenshotBtn : MonoBehaviour {
 		//3. save file to specific directory
 		int fcount = Directory.GetFiles (galleryPath, "*.png", SearchOption.AllDirectories).Length; // Count the number of file(파일개수)
 		string[] files = Directory.GetFiles (galleryPath, "*.png", SearchOption.AllDirectories); // String array(save screenshot file)
-		int limit = 3;
+		int limit = 6;
 
 		// if file number reached at limit number, then delete the oldest file
 		if (fcount == limit){
