@@ -4,6 +4,9 @@ using System.IO;
 
 public class ScreenshotBtn : MonoBehaviour {
 
+	private bool isReady = true;
+	private const float TIME_INTERVAL = 2.0f;
+
 	// Use this for initialization
 	void Start () {
 		if(!Directory.Exists(Application.dataPath + "/galleryData")){
@@ -16,8 +19,18 @@ public class ScreenshotBtn : MonoBehaviour {
 	
 	}
 
+	void buttonReady(){
+		isReady = true;
+		
+	}
+
 	void OnCanvasDown(){
 		// TODO set Timer or wait until Canvas Up event
+		if(isReady == true){
+			OnMouseDown();
+			Invoke("buttonReady",TIME_INTERVAL);
+			isReady = false;
+		}
 	}
 
 	void OnMouseDown(){
@@ -30,8 +43,13 @@ public class ScreenshotBtn : MonoBehaviour {
 		//1. get canvas image (Texture2D)
 		GameObject canvas = GameObject.Find ("canvas");
 		drawingOnGUI canvasScript = canvas.GetComponent<drawingOnGUI> ();
+		Texture2D canvasTex;
 
-		Texture2D canvasTex = canvasScript.GetCanvasTex ();
+		if(canvasScript == null){
+			Sandart sandartCanvasScript = canvas.GetComponent<Sandart> ();
+			canvasTex = sandartCanvasScript.GetCanvasTex();
+		}else
+			canvasTex = canvasScript.GetCanvasTex ();
 
 		//2. encode the image to png file
 		byte[] canvasPng = canvasTex.EncodeToPNG();

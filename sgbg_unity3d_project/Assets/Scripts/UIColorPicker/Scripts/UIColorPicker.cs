@@ -74,7 +74,9 @@ public class UIColorPicker : UIWidgetContainer {
 		Vector2 position=thumbScreenPosition-spectrumScreenPosition+colorSpectrum.localSize*0.5f;
 		Texture2D texture = colorSpectrum.mainTexture as Texture2D;
 		position = new Vector2 ((position.x/colorSpectrum.localSize.x), (position.y / colorSpectrum.localSize.y) );
-		return texture.GetPixelBilinear (position.x,position.y);
+		Color color = texture.GetPixelBilinear (position.x,position.y);
+		color.a = 1.0f;
+		return color;
 	}
 
 	private void UpdateThumbPosition(){

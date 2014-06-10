@@ -23,12 +23,6 @@ public class getWorkspaceData : MonoBehaviour {
 		PlayerPrefs.DeleteKey ("art");
 	}
 
-	void OnLevelWasLoaded(int level){
-		if(level == 1){ // water oil scene
-			Debug.Log ("water oil scene loaded");
-
-		}
-	}
 	
 	// Update is called once per frame
 	void Update () {

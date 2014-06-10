@@ -18,6 +18,8 @@ public class saveWorkingSpace : MonoBehaviour {
 	}
 
 	void OnCanvasDown(){
+		// TODO Is needed to set timer
+		OnMouseDown ();
 	}
 
 	void OnMouseDown(){

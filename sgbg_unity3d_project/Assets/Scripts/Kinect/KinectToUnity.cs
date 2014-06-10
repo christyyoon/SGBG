@@ -29,16 +29,21 @@ public class KinectToUnity : MonoBehaviour {
 		prevMinPtr = new Vector2 (0, 0);
 	}
 
-	public static KinectToUnity instance
+	public static KinectToUnity Instance
 	{
 		get
 		{
 			if(_instance == null)
 			{
 				_instance = GameObject.FindObjectOfType<KinectToUnity>();
-				
+
+				if(!_instance){
+					GameObject container = new GameObject();
+					container.name = "KinectToUnityContainer";
+					_instance = container.AddComponent(typeof(KinectToUnity)) as KinectToUnity;
+				}
 				//Tell unity not to destroy this object when loading a new scene!
-				DontDestroyOnLoad(_instance.gameObject);
+				//DontDestroyOnLoad(_instance.gameObject);
 			}
 			
 			return _instance;
@@ -85,29 +90,46 @@ public class KinectToUnity : MonoBehaviour {
 			
 			//initiate number of vertex
 			pointCount = 2;
-			
-			
-			
 		}
 		
 		if (dw.pollDepth())
 		{
-			//Debug.Log();
+			Debug.Log("poll depth");
 			
 			if(pointCount == 2){ //two point(LT, RB) were detected
-				//drawRect(img,ROIVertex[0],ROIVertex[1]);
-				//				Vector2 screenPoint = findPointInROI(dw.depthImg);
-				//				if(screenPoint != null)
-				//					guiT.transform.position = new Vector3(screenPoint.x,screenPoint.y,0f);
+				callGameObjByKinect(dw.depthImg);
+			}
+
+		}
+	}
+
+	public void Run(){
+			if (Input.GetKeyDown (KeyCode.S)) { // key S means snapshot
+			Debug.Log ("S key pressed!");
+			
+			// store a snapshot of depth image
+			//depthSnapshot = (short[]) dw.depthImg.Clone(); // deep copy
+			depthSnapshot = new short[320*240];
+			arrayCopy(depthSnapshot,dw.depthImg);
+			
+			//initiate ROI vertics manually
+			ROIVertex[0].Set(55,3);//left top
+			ROIVertex[1].Set(310,195);//right bottom
+			
+			pointCount = 2;
+			//initiate number of vertex
+		}
+		
+		if (dw.pollDepth())
+		{
+			Debug.Log("poll depth");
+			
+			if(pointCount == 2){ //two point(LT, RB) were detected
 				callGameObjByKinect(dw.depthImg);
 			}else {
 				
 			}
 			
-			//tex.SetPixels32(img);
-			
-			//text.guiText.text ="minimum depth value : " + minDepth.ToString()+"\n"+
-			//	"x : " + minPoint.y +", y : " + minPoint.x;
 			if(depthSnapshot != null){
 				//text.guiText.text += "\nsnapshot";
 			}
@@ -166,7 +188,8 @@ public class KinectToUnity : MonoBehaviour {
 	}
 	
 	GameObject findGameObject(float x, float y){
-		Ray ray = camera.ScreenPointToRay(new Vector3(x,y,0));  
+		//Ray ray = camera.ScreenPointToRay(new Vector3(x,y,0));  
+		Ray ray = Camera.main.ScreenPointToRay(new Vector3(x,y,0));  
 		RaycastHit hitObj;
 		
 		if (Physics.Raycast (ray, out hitObj, Mathf.Infinity)) {
@@ -178,7 +201,7 @@ public class KinectToUnity : MonoBehaviour {
 	}
 	
 	GameObject findColorSelector(float x, float y){
-		if(UICamera.currentCamera == null)
+		if(UICamera.currentCamera == null) // current scene is not a water-oil space
 			return null;
 
 		Ray ray = UICamera.currentCamera.ScreenPointToRay(new Vector3(x,y,0));  
@@ -194,12 +217,11 @@ public class KinectToUnity : MonoBehaviour {
 	
 	private void callGameObjByKinect(short[] depthBuf)
 	{
-		//Color32[] img = new Color32[depthBuf.Length];
 		minDepth = 0; // initialize mindepth per frame
 		minPoint.Set (0, 0);
-		
+
+		//find a min coordinate in ROI 
 		for (int pix = 0; pix < depthBuf.Length; pix += 2) {
-			
 			
 			// 's' key was pressed and two canvas vertex(leftTop, rightBottom) are not detected
 			// restrict depth range from 800mm to 1000mm b/c IR noise (kinect depth accruacy decreases with increasing distance from the sensor) 
@@ -223,25 +245,10 @@ public class KinectToUnity : MonoBehaviour {
 			}
 		}
 		
-		//		if(minDepth <= errorRange){ // stable state
-		//			if(isDetected == false){
-		//				Debug.Log("stable state");
-		//			}
-		//			isDetected = true;
-		//		}else{
-		//			
-		//		}
-		//		
-		//		if (minDepth > 30 && isDetected == true && pointCount < 2) {
-		//			Debug.Log((pointCount + 1)+" point detected");
-		//			ROIVertex [pointCount++] = minPoint;
-		//			
-		//			isDetected = false; // until canvas state turn back to stable state
-		//		} 
-		//test//
+		//valid input!//
 		if(pointCount == 2 && minDepth > errorRange){
 			
-			if(isDetected == false)
+			if(isDetected == false) // for canvas up event
 				isDetected = true;
 			
 			float x,y;
@@ -256,11 +263,14 @@ public class KinectToUnity : MonoBehaviour {
 			// for debuging
 			if(guiT != null)
 				guiT.transform.position = new Vector3(x,y,0f); 
-			
-			//y -= 0.06f; // adjust calibration manually 
-			
+
+			// adjust calibration manually 
+			//y -= 0.06f; 
+
+			//for debugging
 			text.guiText.text = "spandex pos : "+ x + "," + y;
-			
+
+			//real valid input
 			Vector2 worldPoint = new Vector2(Screen.width*x, Screen.height*y);
 			
 			//2. find game object by kinect input(2D coordinates)
@@ -272,6 +282,7 @@ public class KinectToUnity : MonoBehaviour {
 			//3. call the onSpandexDown method
 			if (gameObject != null){
 				if(gameObject.name == "canvas"){
+					//TODO Sandart
 					drawingOnGUI canvasScript = gameObject.GetComponent<drawingOnGUI>();
 					canvasScript.OnCanvasDown(worldPoint,minDepth); // TODO complete params
 				}
@@ -280,12 +291,12 @@ public class KinectToUnity : MonoBehaviour {
 				}
 				else
 					gameObject.SendMessage ("OnCanvasDown");
-				//Debug.Log ("gameobject found : " + gameObject.name);
+				Debug.Log ("gameobject found : " + gameObject.name);
 			}
 			
-			prevMinPtr = worldPoint;
+			prevMinPtr = worldPoint; // for canvas up event
 		}
-		else if(pointCount == 2 && minDepth < errorRange && isDetected == true){
+		else if(pointCount == 2 && minDepth < errorRange && isDetected == true){ // End of canvas down
 			isDetected = false;
 			
 			if(findGameObject(prevMinPtr.x,prevMinPtr.y).name == "canvas") // 'spandex canvas up' on 'drawing canvas'

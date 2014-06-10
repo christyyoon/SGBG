@@ -5,6 +5,8 @@ using System.IO;
 /* Dynamic objects's script component */
 public class picture : MonoBehaviour
 {
+	private bool isReady = true;
+	private const float TIME_INTERVAL = 0.5f;
 	
 	public Vector3 receivedScale; // Value of receiver(scale)
 	public Vector3 receivedPosition; // Value of receiver(position)
@@ -71,6 +73,26 @@ public class picture : MonoBehaviour
 			File.Delete(Application.dataPath + "/galleryData/" + receivedFilename + ".buf");
 		
 	}
+
+	void buttonReady(){
+		isReady = true;
+		//PlayerPrefs.DeleteKey ("isReady");
+	}
+
+	public void setTimer(){
+
+		isReady = false;
+		Invoke("buttonReady",TIME_INTERVAL);
+	}
+
+	void OnCanvasDown(){
+		if(isReady == true){
+			OnMouseDown();
+			Invoke("buttonReady",TIME_INTERVAL);
+			//PlayerPrefs.SetInt("isReady",0);
+			isReady = false;
+		}
+	}
 	
 	void OnMouseDown()
 	{
@@ -132,13 +154,30 @@ public class picture : MonoBehaviour
 			renderer.transform.position = new Vector3(0.05f, 0.96f, -0.1f); // Apply expanded picturs's position
 			renderer.transform.localScale = new Vector3(1.83f, 1.16f, 0.01f); // Apply expanded picture,s scale
 			check = 0; // Provide chance to deselction
+
+			//notify file name
+			GameObject.Find("print").SendMessage("setFileName",
+			                                     Application.dataPath + "/galleryData/" + receivedFilename + ".png");
 		}
 		
 		else if (check == 0) // When select expanded picture, pictue is returned original size and position(screenshot)
 		{
+			for(int i = 1 ; i <= 6 ; i++){
+				if(this.name == ("picture"+i.ToString()))
+					continue;
+				GameObject pictures = GameObject.Find("picture"+i.ToString());
+				if(pictures != null){
+					picture picScript = pictures.GetComponent<picture>();
+					picScript.setTimer();
+				}
+
+			}
+
 			renderer.transform.position = receivedPosition; // Return to original position
 			renderer.transform.localScale = receivedScale; // Return to original scale
 			check = 1; // Provide chance to selction
+
+			GameObject.Find("print").SendMessage("setFileName",string.Empty);
 		}
 		
 	}

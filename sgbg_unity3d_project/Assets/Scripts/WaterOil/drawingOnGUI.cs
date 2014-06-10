@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices; // needed to import dll 
@@ -132,6 +132,16 @@ public class drawingOnGUI : MonoBehaviour {
 		mypaint_setCanvas(buf);
 	}
 
+	private Vector2 valueToPoint(int index,int row){
+		Vector2 point = new Vector2();
+		int x = index % row;
+		int y = index / row;
+		
+		point.Set (x, y);
+		
+		return point;
+	}
+
 	private void updateTexture(UpdateData updateData){
 		int startX = updateData.x;
 		int startY = updateData.y;
@@ -170,14 +180,15 @@ public class drawingOnGUI : MonoBehaviour {
 			                  j % tileSizePixel) * tileSizePixel +
 			                 i % tileSizePixel);
 
-				if(index >= buffer.Length || index < 0 ) // take care negative index
-				break;
-
 			//TODO handle array index exception in bottom edge 
+			Vector2 indexToXY = valueToPoint(index,canvasWidth);
+			
+			if(i < 0 || i >= canvasWidth || j < 0 || j >= canvasHeight)
+				continue;
 
-			texture.SetPixel(i,j,new Color((float)(System.UInt16)buffer[index]/65535*2.0f, // 2.0f means each chanel is doubled
-			                               (float)(System.UInt16)buffer[index+1]/65535*2.0f,
-			                               (float)(System.UInt16)buffer[index+2]/65535*2.0f,
+			texture.SetPixel(i,j,new Color((float)(System.UInt16)buffer[index]/65535*2.1f, // 2.0f means each chanel is doubled
+			                               (float)(System.UInt16)buffer[index+1]/65535*2.1f,
+			                               (float)(System.UInt16)buffer[index+2]/65535*2.1f,
 			                               (float)(System.UInt16)buffer[index+3]/65535*3.5f)
 			                 );
 			}
@@ -199,23 +210,30 @@ public class drawingOnGUI : MonoBehaviour {
 			 * 	water color -> 0.4 ~ 1.0
 			 * 	oil			-> 0.1 ~ 0.8
 			 */
-//			float depthRatio = ((float)minDepth-15)/70; // 70mm is max hardness
-//
-//			if(depthRatio > 1.0f)
-//				depthRatio = 1.0f;
-//
-//			float hardness = 0;
-//
-//			if(currentTool == ToolType.waterbrush){
-//				hardness = 0.2f + 0.6f*depthRatio;
-//				mypaint_setHardness(hardness);
-//			}
-//			else if(currentTool == ToolType.oilbrush){
-//				hardness = 0.1f + 0.7f*depthRatio;
-//				mypaint_setHardness(hardness);
-//			}
-//
-			//mypaint_setHardness(depth);
+			float depthRatio = ((float)minDepth-15)/70; // 70mm is max hardness , 15mm is possible error range
+			float radiusRatio = ((float)minDepth-15)/70;
+
+			if(depthRatio > 1.0f)
+				depthRatio = 1.0f;
+
+			if(radiusRatio > 1.0f)
+				radiusRatio = 1.0f;
+
+			float hardness = 0;
+
+			if(currentTool == ToolType.waterbrush){
+				hardness = 0.1f + 0.6f*depthRatio;
+				mypaint_setHardness(hardness);
+			}
+			else if(currentTool == ToolType.oilbrush){
+				hardness = 0.1f + 0.7f*depthRatio;
+				mypaint_setHardness(hardness);
+			}else if(currentTool == ToolType.pencil){
+				radiusRatio = 0;
+			}
+
+			mypaint_setRadius(1.0f + 2.0f*radiusRatio);
+			//mypaint_setHardness(hardness);
 
 			System.IntPtr updateDataPtr = mypaint_draw(mousePosition.x - leftTopPosition.x,
 			                                    canvasHeight - (mousePosition.y - leftTopPosition.y),
@@ -228,6 +246,7 @@ public class drawingOnGUI : MonoBehaviour {
 	}
 
 	public void OnCanvasUp(){
+		Debug.Log ("OnCanvasUp");
 		mypaint_draw_end();
 
 		// notify the change of color to palette
@@ -248,6 +267,8 @@ public class drawingOnGUI : MonoBehaviour {
 	}
 
 	public void OnCanvasDelete(){
+		isCanvasChanged = false;
+
 		mypaint_release ();
 
 		mypaint_initWithImageSize (canvasWidth, canvasHeight); //initialize mypaint drawing alogrithm
@@ -450,6 +471,7 @@ public class drawingOnGUI : MonoBehaviour {
 		}
 		else if(Input.GetKeyDown(KeyCode.H)){
 			hardnessScale += 0.02f;
+			Debug.Log("hard : " + hardnessScale);
 			mypaint_setHardness(hardnessScale);
 		}
 		else if (Input.GetKeyDown(KeyCode.U)){

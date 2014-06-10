@@ -3,5 +3,7 @@
 	knife,
 	oilbrush,
 	waterbrush,
-	pencil
+	pencil,
+	sand,
+	sandEraser
 };
